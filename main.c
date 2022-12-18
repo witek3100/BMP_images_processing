@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+void load_image();
 void negative();
 void brightness();
 void exposure();
