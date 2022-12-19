@@ -15,7 +15,7 @@ typedef unsigned int int32;
 typedef short int16;
 typedef unsigned char byte;
 
-byte* negative(byte *pixels);
+byte* negative(byte *pixels, int size);
 byte* brightness(byte *pixels);
 byte* exposure(byte *pixels);
 byte* remove_col(byte *pixels);
@@ -24,7 +24,7 @@ byte* remove_col(byte *pixels);
 //width: An int pointer to store the width of the image in pixels
 //height: An int pointer to store the height of the image in pixels
 //bytesPerPixel: An int pointer to store the number of bytes per pixel that are used in the image
-void ReadImage(const char *fileName,byte **pixels, int32 *width, int32 *height, int32 *bytesPerPixel)
+void read_bmp(const char *fileName,byte **pixels, int32 *width, int32 *height, int32 *bytesPerPixel)
 {
     FILE *imageFile = fopen(fileName, "rb");
 
@@ -78,7 +78,7 @@ void ReadImage(const char *fileName,byte **pixels, int32 *width, int32 *height, 
 //width: The width of the image in pixels
 //height: The height of the image in pixels
 //bytesPerPixel: The number of bytes per pixel that are used in the image
-void WriteImage(const char *fileName, byte *pixels, int32 width, int32 height,int32 bytesPerPixel)
+void write_bmp(const char *fileName, byte *pixels, int32 width, int32 height,int32 bytesPerPixel)
 {
     //Open file in binary mode
     FILE *outputFile = fopen(fileName, "wb");
@@ -145,7 +145,6 @@ int main(int argc, char *argv[])
 
     int i, j;
     byte *pixels;
-    byte *newpixels;
     int32 width;
     int32 height;
     int32 bytesPerPixel;
@@ -156,10 +155,12 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    ReadImage(argv[1], &pixels, &width, &height,&bytesPerPixel);
+    read_bmp(argv[1], &pixels, &width, &height,&bytesPerPixel);
+    int size = 3*width*height;
+    byte *newpixels;
 
     if (*argv[2] == '1'){
-        newpixels = negative(pixels);
+        newpixels = negative(pixels, size);
     } else if (*argv[2] == '2'){
         newpixels = brightness(pixels);
     } else if (*argv[2] == '3'){
@@ -168,12 +169,16 @@ int main(int argc, char *argv[])
         newpixels = remove_col(pixels);
     }
 
-    WriteImage("images/image1-out.bmp", pixels, width, height, bytesPerPixel);
+    write_bmp("images/image1-out.bmp", newpixels, width, height, bytesPerPixel);
     free(pixels);
     return 0;
 }
 
-byte* negative(byte* pixels){
+byte* negative(byte* pixels, int size){
+    for(int i = 0; i < size; i += 3)
+    {
+        pixels[i] = 255 - pixels[i];
+    }
     return pixels;
 }
 byte* brightness(byte* pixels){
