@@ -10,21 +10,19 @@
 #define NO_COMPRESION 0
 #define MAX_NUMBER_OF_COLORS 0
 #define ALL_COLORS_REQUIRED 0
-
 typedef unsigned int int32;
 typedef short int16;
 typedef unsigned char byte;
 
 byte* negative(byte *pixels, int size);
-byte* brightness(byte *pixels);
-byte* exposure(byte *pixels);
-byte* remove_col(byte *pixels);
+byte* brightness(byte *pixels, int size, char di, int p);
+byte* exposure(byte *pixels, int size, int p);
+byte* remove_col(byte *pixels, int size, char color);
 void read_bmp(const char *fileName,byte **pixels, int32 *width, int32 *height, int32 *bytesPerPixel);
 void write_bmp(const char *fileName, byte *pixels, int32 width, int32 height,int32 bytesPerPixel);
 
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
-
     int i, j;
     byte *pixels;
     int32 width;
@@ -44,11 +42,14 @@ int main(int argc, char *argv[])
     if (*argv[2] == '1'){
         newpixels = negative(pixels, size);
     } else if (*argv[2] == '2'){
-        newpixels = brightness(pixels);
+        newpixels = brightness(pixels, size, *argv[3], atoi(argv[4]));
     } else if (*argv[2] == '3'){
-        newpixels = exposure(pixels);
+        newpixels = exposure(pixels, size, atoi(argv[3]));
     } else if (*argv[2] == '4'){
-        newpixels = remove_col(pixels);
+        newpixels = remove_col(pixels, size, *argv[3]);
+    } else {
+        printf("niepoprawne parametry programu");
+        exit(1);
     }
 
     write_bmp("images/image1-out.bmp", newpixels, width, height, bytesPerPixel);
@@ -57,19 +58,57 @@ int main(int argc, char *argv[])
 }
 
 byte* negative(byte* pixels, int size){
-    for(int i = 0; i < size; i += 3)
-    {
+    for(int i = 0; i < size; i++){
         pixels[i] = 255 - pixels[i];
     }
     return pixels;
 }
-byte* brightness(byte* pixels){
+byte* brightness(byte* pixels, int size, char di, int p){
+    if (di == 'i'){
+        for (int i=0; i<size; i++){
+            pixels[i] = pixels[i] * p;
+            if (pixels[i] > 255){
+                pixels[i] = 255;
+            }
+        }
+    } else if (di == 'd'){
+        for (int i=0; i<size; i++){
+            pixels[i] = pixels[i] / p;
+            if (pixels[i] < 0){
+                pixels[i] = 0;
+            }
+        }
+    } else {
+        printf("niepoprawne parametry funkcji");
+        exit(1);
+    }
     return pixels;
 }
-byte* exposure(byte* pixels){
+byte* exposure(byte* pixels, int size, int p){
+    if (p > 2 || p < 0){
+        printf("niepoprawne parametry funckji");
+    }
+    for (int i=0; i< size; i++){
+        pixels[i] = 255 - (pixels[i] * 0.1 * p);
+    }
     return pixels;
 }
-byte* remove_col(byte* pixels){
+byte *remove_col(byte *pixels, int size, char color) {
+    if (color == 'r'){
+        for (int i = 2; i< size; i += 3){
+            pixels[i] = 0;
+        }
+    } else if (color == 'g'){
+        for (int i = 1; i< size; i += 3){
+            pixels[i] = 0;
+        }
+    } else if (color == 'b'){
+        for (int i = 0; i< size; i += 3){
+            pixels[i] = 0;
+        }
+    } else {
+        printf("niepoprawne parametry funkcji");
+    }
     return pixels;
 }
 
