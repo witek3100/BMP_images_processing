@@ -1,3 +1,3 @@
 simple C program to process bmp images 
 
-sequential and parallelized version using open mpi
+sequential version and parallelized version using open mpi
