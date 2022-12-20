@@ -122,9 +122,9 @@ byte *remove_col(byte *pixels, int size, char color) {
     if (color == 'r'){
         printf("%s", " czerwony\n");
         for (int i; i<1000;i++){
-        for (int i = 2; i< size; i += 3){
-            pixels[i] = 0;
-        }}
+            for (int i = 2; i< size; i += 3){
+                pixels[i] = 0;
+            }}
     } else if (color == 'g'){
         printf("%s", " zielony\n");
         for (int i = 1; i< size; i += 3){
