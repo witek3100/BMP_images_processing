@@ -3,5 +3,4 @@ project(BMP_images_processing C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(BMP_images_processing
-        sequential.c)
+add_executable(BMP_images_processing sequential.c)
