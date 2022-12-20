@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #define DATA_OFFSET_OFFSET 0x000A
 #define WIDTH_OFFSET 0x0012
 #define HEIGHT_OFFSET 0x0016
@@ -52,7 +53,7 @@ int main(int argc, const char *argv[])
         exit(1);
     }
 
-    write_bmp("images/image1-out.bmp", newpixels, width, height, bytesPerPixel);
+    write_bmp(strcat(strtok(argv[1], "."), "-out.bmp"), newpixels, width, height, bytesPerPixel);
     free(pixels);
     return 0;
 }
